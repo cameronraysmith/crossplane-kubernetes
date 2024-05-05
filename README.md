@@ -6,7 +6,7 @@
 ## Generate manifests
 
 ```bash
-devbox shell
+direnv allow
 
 just package-generate
 
@@ -16,7 +16,7 @@ exit
 ## Run Tests
 
 ```bash
-devbox shell
+direnv allow
 
 just cluster-create
 
@@ -32,7 +32,7 @@ exit
 ## Publish To Upbound
 
 ```bash
-devbox shell
+direnv allow
 
 # Replace `[...]` with the Upbound Cloud account
 export UP_ACCOUNT=[...]
