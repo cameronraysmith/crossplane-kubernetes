@@ -10,6 +10,11 @@ package-generate:
   kcl run kcl/definition.k > package/definition.yaml
   kcl run kcl/compositions.k > package/compositions.yaml
 
+# Generates package files from CUE sources.
+package-generate-cue:
+  timoni build dot-kubernetes timoni > package/all.yaml
+  sed -i '${/^\---$/d;}' package/all.yaml
+
 # Applies Compositions and Composite Resource Definition.
 package-apply:
   kubectl apply --filename package/definition.yaml && sleep 1
