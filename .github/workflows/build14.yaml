@@ -1,0 +1,64 @@
+name: build13
+on:
+  push:
+    branches:
+      - experiment-*
+
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        description: "Run with tmate.io debugging enabled"
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  build-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # ratchet:actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@de22e16c4711fca50c816cc9081563429d1cf563 # ratchet:DeterminateSystems/nix-installer-action@v10
+      - name: Setup Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@fc6aaceb40b9845a02b91e059ec147e78d1b4e41 # ratchet:DeterminateSystems/magic-nix-cache-action@v4
+        with:
+          use-gha-cache: false
+      - name: Setup tmate debug session
+        if: ${{ inputs.debug_enabled == 'true' }}
+        uses: mxschmitt/action-tmate@a283f9441d2d96eb62436dc46d7014f5d357ac22 # ratchet:mxschmitt/action-tmate@v3
+      - name: Test
+        run: |
+          set -euo pipefail
+
+          df -h
+
+          nix develop .#default \
+          --accept-flake-config \
+          --impure \
+          --fallback \
+          --print-build-logs \
+          -c just test
+
+          df -h
+
+# - name: Publish
+#   run: |
+#     export UP_TOKEN=${{ secrets.UP_TOKEN }}
+#     export UP_ACCOUNT=${{ secrets.UP_ACCOUNT }}
+#     export VERSION=v0.12.${{ github.run_number }}
+#     devbox run package-publish
+# - name: Commit changes
+#   run: |
+#     git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+#     git config --local user.name "github-actions[bot]"
+#     git add .
+#     git commit -m "Config update [skip ci]"
+# - name: Push changes
+#   uses: ad-m/github-push-action@master
+#   with:
+#     github_token: ${{ secrets.CROSSPLANE_TOKEN }}
+#     branch: ${{ github.ref }}
+
