@@ -42,6 +42,7 @@
               bat
               gum
               gh
+              gnused
               just
               kind
               kubectl
