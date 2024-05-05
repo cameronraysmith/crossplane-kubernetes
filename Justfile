@@ -48,11 +48,11 @@ cluster-create: package-generate _cluster-create-kind
 
 # Destroys the cluster
 cluster-destroy:
-  kind delete cluster
+  kind delete cluster --name crossplane-kubernetes
 
 # Creates a kind cluster
 _cluster-create-kind:
-  -kind create cluster
+  -kind create cluster --config kind.yaml
   -helm repo add crossplane-stable https://charts.crossplane.io/stable
   -helm repo update
   helm upgrade --install crossplane crossplane-stable/crossplane --namespace crossplane-system --create-namespace --wait
