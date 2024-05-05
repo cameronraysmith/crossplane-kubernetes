@@ -11,6 +11,11 @@ package-generate:
   kcl run kcl/compositions.k > package/compositions.yaml
   kcl run kcl/backstage-template.k > backstage/crossplane-kubernetes.yaml
 
+# Generates package files from CUE sources.
+package-generate-cue:
+  timoni build dot-kubernetes timoni > package/all.yaml
+  sed -i '${/^\---$/d;}' package/all.yaml
+
 # Applies Compositions and Composite Resource Definition.
 package-apply:
   kubectl apply --filename package/definition.yaml && sleep 1
